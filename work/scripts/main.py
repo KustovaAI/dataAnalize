@@ -33,8 +33,8 @@ def analizeQuantitiveVariable(data):
 
 CB = CARSB.copy()
 CB = CB.astype({'Age':np.float64, 'Gender':'category', 'City':'category', 'Position':'category',
-                'Total years of experience':np.float64, 'Seniority level':'category', 
-                'Yearly brutto salary (without bonus and stocks) in EUR':np.float64})
+                'Total_years_of_experience':np.float64, 'Seniority_level':'category', 
+                'Salary':np.float64})
 
 from pandas.api.types import CategoricalDtype
 cat_type_gender = CategoricalDtype(categories=["Male", "Female"], ordered=False)
@@ -45,25 +45,25 @@ print("Анализ количественных переменных\n")
 print("Возраст:")
 analizeQuantitiveVariable(CB['Age'])
 print("Опыт работы:")
-analizeQuantitiveVariable(CB['Total years of experience'])
+analizeQuantitiveVariable(CB['Total_years_of_experience'])
 print("Заработная плата:")
-analizeQuantitiveVariable(CB['Yearly brutto salary (without bonus and stocks) in EUR'])
+analizeQuantitiveVariable(CB['Salary'])
 
 # Графики гистограммы совместно с графиком плотности нормального распределения
 sb.distplot(CB['Age'], hist=True, kde=True, 
              color = 'darkblue', 
-             hist_kws={'edgecolor':'black'})
-sb.distplot(CB['Total years of experience'], hist=True, 
-            kde=True, hist_kws={'edgecolor':'black'})
-sb.distplot(CB['Yearly brutto salary (without bonus and stocks) in EUR'], hist=True, kde=True, 
+             hist_kws={'edgecolor':'black'}).set_title('Распределение возраста')
+sb.distplot(CB['Total_years_of_experience'], hist=True, 
+            kde=True, hist_kws={'edgecolor':'black'}).set_title('Распределение стажа работы')
+sb.distplot(CB['Salary'], hist=True, kde=True, 
              color = 'darkblue', 
-             hist_kws={'edgecolor':'black'})
+             hist_kws={'edgecolor':'black'}).set_title('Распределение заработной платы')
 
 # Правило 3-х сигм для заработной платы
 print("Выбросы заработной платы по правилу трёх сигм: ")
-for x in CB['Yearly brutto salary (without bonus and stocks) in EUR']:
-    if (abs(x - np.mean(CB['Yearly brutto salary (without bonus and stocks) in EUR']) >  
-    3 * np.std(CB['Yearly brutto salary (without bonus and stocks) in EUR']))):
+for x in CB['Salary']:
+    if (abs(x - np.mean(CB['Salary']) >  
+    3 * np.std(CB['Salary']))):
         print(x)
 
 
@@ -74,7 +74,7 @@ CB['Gender'].value_counts().plot(kind='bar', ylabel='frequency')
 plt.xlabel("Пол")
 plt.show()
 
-CB['Seniority level'].value_counts().plot(kind='bar', ylabel='frequency')
+CB['Seniority_level'].value_counts().plot(kind='bar', ylabel='frequency')
 plt.xlabel("Грейд")
 plt.show()
 
@@ -90,7 +90,7 @@ for i in range(0, np.size(CB['City'])):
         newlist = np.append(newlist, CB['City'][i])
     else:
         newlist = np.append(newlist, 'Другие')
-plt.hist(newlist)
+plt.hist(newlist, edgecolor='black')
 plt.xlabel("Город")
 plt.xticks(rotation = 70)
 plt.show()
@@ -116,4 +116,4 @@ plt.show()
 #Анализ статистической связи.
 
 # Скорее всего нужно убрать выброс (одну з.п в 500000000), тогда график норм будет
-sb.boxplot(data=CB, x="Age", y="Yearly brutto salary (without bonus and stocks) in EUR")
+sb.boxplot(data=CB, x="Age", y="Salary")
